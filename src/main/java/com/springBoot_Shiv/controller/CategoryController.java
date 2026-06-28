@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.springBoot_Shiv.entity.Category;
+import com.springBoot_Shiv.dto.CategoryResponse;
+import com.springBoot_Shiv.dto.Category_Dto;
 import com.springBoot_Shiv.service.CategoryService;
 
 @RestController
@@ -23,9 +24,9 @@ public class CategoryController {
 	private CategoryService categoryService;
 	
 	@PostMapping("save-category")
-	public ResponseEntity<?> saveCategory(@RequestBody Category  category){
+	public ResponseEntity<?> saveCategory(@RequestBody Category_Dto  category_Dto){
 		
-		Boolean saveCategory = categoryService.saveCategory(category);
+		Boolean saveCategory = categoryService.saveCategory(category_Dto);
 		
 		if(saveCategory) {
 			return new ResponseEntity<>("saved success", HttpStatus.CREATED);
@@ -37,13 +38,25 @@ public class CategoryController {
 	
 	@GetMapping("category")
 	public ResponseEntity<?> getAllCatrgory(){
-		List<Category> allCategory = categoryService.getAllCategory();
+		List<Category_Dto> allCategory = categoryService.getAllCategory();
 		
 		if(CollectionUtils.isEmpty(allCategory)) {
 			return ResponseEntity.noContent().build();
 		}
 		else {
 			return new ResponseEntity<>(allCategory,HttpStatus.OK);
+		}
+	}
+	
+	@GetMapping("active-category")
+	public ResponseEntity<?> getActiveCategory(){
+		List<CategoryResponse> categoryList = categoryService.getActiveResponse();
+		
+		if(CollectionUtils.isEmpty(categoryList)) {
+			return ResponseEntity.noContent().build();
+		}
+		else {
+			return new ResponseEntity<>(categoryList, HttpStatus.OK);
 		}
 	}
 }
