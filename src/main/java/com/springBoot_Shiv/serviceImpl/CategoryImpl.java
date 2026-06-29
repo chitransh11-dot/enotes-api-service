@@ -2,6 +2,7 @@ package com.springBoot_Shiv.serviceImpl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,7 @@ public class CategoryImpl implements CategoryService{
 	public List<Category_Dto> getAllCategory() {
 		// TODO Auto-generated method stub
 		
-		List<Category> categories = categoryRepo.findAll();
+		List<Category> categories = categoryRepo.findByIsDeletedFalse();
 		
 		List<Category_Dto> categoryDtoList = categories.stream().map(cat ->mapper.map(cat,Category_Dto.class)).toList();
 
@@ -68,6 +69,31 @@ public class CategoryImpl implements CategoryService{
 		List<CategoryResponse> categoryList = categories.stream().map(cat ->mapper.map(cat, CategoryResponse.class)).toList();
 		
 		return categoryList;
+	}
+
+	@Override
+	public Category_Dto getCategoryById(Integer id) {
+		// TODO Auto-generated method stub
+		
+		Optional<Category> findByCategory  = categoryRepo.findByIdAndIsDeletedFalse(id);
+		if(findByCategory.isPresent()) {
+			Category category = findByCategory.get();
+			return mapper.map(category, Category_Dto.class);
+		}
+		return null;
+	}
+
+	@Override
+	public Boolean getDelete(Integer id) {
+		// TODO Auto-generated method stub
+	Optional <Category>	 findByCategory = categoryRepo.findById(id);
+	if(findByCategory.isPresent()) {
+		Category category = findByCategory.get();
+		category.setIsDeleted(true);
+		categoryRepo.save(category);
+		return true;
+	}
+		return false;
 	}
 
 	
