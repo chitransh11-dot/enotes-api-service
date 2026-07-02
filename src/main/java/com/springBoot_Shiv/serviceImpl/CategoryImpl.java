@@ -12,6 +12,7 @@ import org.springframework.util.ObjectUtils;
 import com.springBoot_Shiv.dto.CategoryResponse;
 import com.springBoot_Shiv.dto.Category_Dto;
 import com.springBoot_Shiv.entity.Category;
+import com.springBoot_Shiv.exception.ResourceNotFoundException;
 import com.springBoot_Shiv.respository.CategoryRepository;
 //import com.springBoot_Shiv.service.CategoryService;
 import com.springBoot_Shiv.service.CategoryService;
@@ -64,6 +65,8 @@ public class CategoryImpl implements CategoryService{
 			category.setCreatedBy(existCategory.getCreatedBy());
 			category.setCreatedOn(existCategory.getCreatedOn());
 			category.setIsDeleted(existCategory.getIsDeleted());
+			category.setUpdatedBy(1);
+			category.setUpdatedOn(new Date());
 		}
 	}
 
@@ -87,12 +90,15 @@ public class CategoryImpl implements CategoryService{
 	}
 
 	@Override
-	public Category_Dto getCategoryById(Integer id) {
+	public Category_Dto getCategoryById(Integer id) throws Exception {
 		// TODO Auto-generated method stub
 		
-		Optional<Category> findByCategory  = categoryRepo.findByIdAndIsDeletedFalse(id);
-		if(findByCategory.isPresent()) {
-			Category category = findByCategory.get();
+		Category category  = categoryRepo.findByIdAndIsDeletedFalse(id).orElseThrow(()-> new ResourceNotFoundException("Category Not Found with id ="+ id));
+		
+		if(!ObjectUtils.isEmpty(category)) {
+			if(category.getName() == null) {
+				throw new IllegalArgumentException("name is null");
+			}
 			return mapper.map(category, Category_Dto.class);
 		}
 		return null;

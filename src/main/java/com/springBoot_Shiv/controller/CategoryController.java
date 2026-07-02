@@ -19,6 +19,8 @@ import com.springBoot_Shiv.dto.CategoryResponse;
 import com.springBoot_Shiv.dto.Category_Dto;
 import com.springBoot_Shiv.service.CategoryService;
 
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @RestController
 @RequestMapping("api/vi/category")
 public class CategoryController {
@@ -40,7 +42,7 @@ public class CategoryController {
 	}
 	
 	@GetMapping("/category")
-	public ResponseEntity<?> getAllCatrgory(){
+	public ResponseEntity<?> getAllCatrgory() {
 		List<Category_Dto> allCategory = categoryService.getAllCategory();
 		
 		if(CollectionUtils.isEmpty(allCategory)) {
@@ -64,11 +66,11 @@ public class CategoryController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getCategoriesDetailsById(@PathVariable Integer id){
+	public ResponseEntity<?> getCategoriesDetailsById(@PathVariable Integer id) throws Exception{
 		
 		Category_Dto categories = categoryService.getCategoryById(id);
 		if(ObjectUtils.isEmpty(categories)) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found with id = " + id );
+			return new ResponseEntity<>("Internal Server Error" ,HttpStatus.NOT_FOUND );
 		}
 		
 		return new ResponseEntity<>(categories, HttpStatus.OK);

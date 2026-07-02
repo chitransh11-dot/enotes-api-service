@@ -25,7 +25,7 @@ public interface CategoryService {
 
  //public Category_Dto getCategoryById();
 
-public  Category_Dto getCategoryById(Integer id);
+public  Category_Dto getCategoryById(Integer id) throws Exception;
 
 public Boolean getDelete(Integer id);
 
