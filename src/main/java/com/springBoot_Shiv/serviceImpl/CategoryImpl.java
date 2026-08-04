@@ -16,6 +16,7 @@ import com.springBoot_Shiv.exception.ResourceNotFoundException;
 import com.springBoot_Shiv.respository.CategoryRepository;
 //import com.springBoot_Shiv.service.CategoryService;
 import com.springBoot_Shiv.service.CategoryService;
+import com.springBoot_Shiv.validation.Validation;
 
 
 
@@ -25,37 +26,36 @@ public class CategoryImpl implements CategoryService{
 	@Autowired
 	private CategoryRepository categoryRepo;
 	
-	
+	@Autowired
+	private Validation validation;
 	
 	@Autowired
-	private ModelMapper  mapper;
+	private ModelMapper  mapper; 
 	
-	public Boolean saveCategory(Category_Dto category_Dto) {
-		// TODO Auto-generated method stub
-//	 Category category = new Category();
-//	 
-//	 category.setName(category_Dto.getName());
-//		category.setDescription(category_Dto.getDescription());
-//		category.setIsActive(category_Dto.getIsActive());
-		
-		Category category = mapper.map(category_Dto,Category.class);
-		if(ObjectUtils.isEmpty(category)) {
-		category.setIsDeleted(false);
-		category.setCreatedBy(1);
-		category.setCreatedOn(new Date());
-		}
-		else {
-			updateCategory(category);
-		}
-		Category saveCategory = categoryRepo.save(category);
-		
-		if(ObjectUtils.isEmpty(saveCategory)) {
+	//public Boolean saveCategory(Category_Dto category_Dto) {
+//		//Validation checkin
+//		//Validation.categoryValidation(category_Dto);
+////CORRECT: Calling it on your @Autowired bean instance
+//Validation.categoryValidation(category_Dto);
+////
+////		Category category = mapper.map(category_Dto, Category.class);
+////		if (category.getId() == null || category.getId() == 0) {
+////			category.setIsDeleted(false);
+////			category.setCreatedBy(1);
+////			category.setCreatedOn(new Date());
+////		} else {
+////			updateCategory(category);
+////		}
+////		Category saveCategory = categoryRepo.save(category);
+////		
+////		if (ObjectUtils.isEmpty(saveCategory)) {
+////			return false;
+////		}
+////		return true;
+//	}
 	
-			
-			return false;
-		}
-			return true;
-	}
+
+
 
 	private void updateCategory(Category category) {
 		// TODO Auto-generated method stub
@@ -115,6 +115,28 @@ public class CategoryImpl implements CategoryService{
 		return true;
 	}
 		return false;
+	}
+
+	@Override
+	public Boolean saveCategory(Category_Dto category_Dto) {
+		
+		validation.categoryValidation(category_Dto);
+
+		Category category = mapper.map(category_Dto, Category.class);
+
+		if (ObjectUtils.isEmpty(category.getId())) {
+			category.setIsDeleted(false);
+			category.setCreatedBy(1);
+			category.setCreatedOn(new Date());
+		} else {
+			updateCategory(category);
+		}
+
+		Category saveCategory = categoryRepo.save(category);
+		if (ObjectUtils.isEmpty(saveCategory)) {
+			return false;
+		}
+		return true;
 	}
 
 	
