@@ -22,6 +22,6 @@ public ResponseEntity<?> handleNullPointerException(Exception e){
 public ResponseEntity<?> handleResourceNotFound(Exception e) {
   // log.error("Resource not found exception occurred: {}", e.getMessage(), e);
 	
-    return new ResponseEntity<Object>(e.getMessage(), HttpStatus.NOT_FOUND);
+    return new ResponseEntity<>( e.getMessage(), HttpStatus.NOT_FOUND);
 }
 }
